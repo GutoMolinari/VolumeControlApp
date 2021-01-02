@@ -1,0 +1,21 @@
+﻿<Window x:Class="VolumeApp.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VolumeApp"
+        mc:Ignorable="d"
+        Title="Volume Control" Height="170" Width="370" ResizeMode="CanMinimize">
+    <Grid>
+        <Label x:Name="lblValorantAudio" Content="Valorant Audio Session" HorizontalAlignment="Left" Margin="13,0,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.527,0.44"/>
+        <Button x:Name="btnAttachValorantAudio" Content="Attach" HorizontalAlignment="Left" Margin="13,30,0,0" VerticalAlignment="Top" Width="75"/>
+        <TextBox x:Name="txtValorantAudioState" Margin="100,30,0,0" TextWrapping="Wrap" Text="State" IsEnabled="False" Height="20" VerticalAlignment="Top" HorizontalAlignment="Left" Width="75"/>
+        <TextBox x:Name="txtValorantAudioMuted" Height="20" Margin="182,30,0,0" TextWrapping="Wrap" Text="isMuted" VerticalAlignment="Top" IsEnabled="False" Width="75" HorizontalAlignment="Left"/>
+        <Button x:Name="btnToggleMuteValorantAudio" Content="Toggle mute" HorizontalAlignment="Left" Margin="265,30,0,0" VerticalAlignment="Top" Width="75"/>
+        <Label x:Name="lblRiotClientServicesAudio" Content="RiotClientServices Audio Session" HorizontalAlignment="Left" Margin="13,58,0,0" VerticalAlignment="Top" RenderTransformOrigin="-0.527,0.44"/>
+        <Button x:Name="btnRiotClientServicesAudio" Content="Attach" HorizontalAlignment="Left" Margin="13,88,0,0" VerticalAlignment="Top" Width="75"/>
+        <TextBox x:Name="txtRiotClientServicesAudioState" Margin="100,88,0,0" TextWrapping="Wrap" Text="State" IsEnabled="False" HorizontalAlignment="Left" Width="75" Height="20" VerticalAlignment="Top"/>
+        <TextBox x:Name="txtRiotClientServicesAudioMuted" Height="20" Margin="182,88,0,0" TextWrapping="Wrap" Text="isMuted" VerticalAlignment="Top" IsEnabled="False" Width="75" HorizontalAlignment="Left"/>
+        <Button x:Name="btnToggleMuteRiotClientServicesAudio" Content="Toggle mute" HorizontalAlignment="Left" Margin="265,88,0,0" VerticalAlignment="Top" Width="75"/>
+    </Grid>
+</Window>
