@@ -71,9 +71,9 @@
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\CoreAudioApi\CoreAudioAPI.csproj">
+    <ProjectReference Include="..\CoreAudio\CoreAudio.csproj">
       <Project>{cc87b8ee-7b4b-47cd-bb47-a2bd44c7d980}</Project>
-      <Name>CoreAudioAPI</Name>
+      <Name>CoreAudio</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

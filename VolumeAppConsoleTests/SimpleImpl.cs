@@ -1,5 +1,5 @@
-﻿using CoreAudioAPI;
-using CoreAudioAPI.Enums;
+﻿using CoreAudio;
+using CoreAudio.Enums;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
