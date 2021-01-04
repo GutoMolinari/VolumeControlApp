@@ -1,6 +1,7 @@
 ﻿using CoreAudio.Enums;
 using CoreAudio.Interfaces;
 using System;
+using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace CoreAudio
@@ -138,7 +139,7 @@ namespace CoreAudio
         /// <summary>
         /// The session identifier of the audio session.
         /// </summary>
-        public string GetSessionIdentifier
+        public string SessionIdentifier
         {
             get
             {
@@ -150,7 +151,7 @@ namespace CoreAudio
         /// <summary>
         /// The session instance identifier of the audio session.
         /// </summary>
-        public string GetSessionInstanceIdentifier
+        public string SessionInstanceIdentifier
         {
             get
             {
@@ -162,12 +163,24 @@ namespace CoreAudio
         /// <summary>
         /// The process identifier of the audio session.
         /// </summary>
-        public uint GetProcessID
+        public uint ProcessID
         {
             get
             {
                 Marshal.ThrowExceptionForHR(_audioSessionControl2.GetProcessId(out var pid));
                 return pid;
+            }
+        }
+
+        private Process _process;
+        public Process Process
+        {
+            get
+            {
+                if (_process == null)
+                    _process = Process.GetProcessById((int)ProcessID);
+
+                return _process;
             }
         }
 
