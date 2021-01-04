@@ -1,7 +1,6 @@
-﻿using CSCore.CoreAudioAPI;
-using System;
+﻿using CoreAudio;
+using CoreAudio.Enums;
 using System.Collections.Generic;
-using System.Runtime.InteropServices;
 
 namespace VolumeApp
 {
@@ -22,21 +21,27 @@ namespace VolumeApp
             }
         }
 
-        public static IEnumerable<AudioSessionControl2> GetAllAudioSessions()
+        public static string GetStringFromMuted(bool mute)
+        {
+            return mute
+                ? "Muted"
+                : "Unmuted"
+                ;
+        }
+
+        public static IEnumerable<AudioSessionControl> GetAllAudioSessions()
         {
             using (var enumeratorMMDevice = new MMDeviceEnumerator())
             using (var device = enumeratorMMDevice.GetDefaultAudioEndpoint(DataFlow.Render, Role.Multimedia))
-            using (var sessionManager = AudioSessionManager2.FromMMDevice(device))
-            using (var enumeratorSessions = sessionManager.GetSessionEnumerator())
             {
-                foreach (var audioSessionControl in enumeratorSessions)
+                foreach (var audioSessionControl in device.AudioSessionManager.Sessions)
                 {
-                    yield return audioSessionControl.QueryInterface<AudioSessionControl2>();
+                    yield return audioSessionControl;
                 }
             }
         }
 
-        public static AudioSessionControl2 GetAudioSessionByProcessName(string processName)
+        public static AudioSessionControl GetAudioSessionByProcessName(string processName)
         {
             foreach (var audioSession in GetAllAudioSessions())
             {
