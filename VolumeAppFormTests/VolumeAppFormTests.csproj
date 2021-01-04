@@ -49,6 +49,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="ActiveWindowHooker.cs" />
     <Compile Include="ForegroundTracker.cs" />
     <Compile Include="LogChangeForeground.cs">
       <SubType>Form</SubType>
@@ -64,6 +65,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="WindowsHooks.cs" />
     <EmbeddedResource Include="LogChangeForeground.resx">
       <DependentUpon>LogChangeForeground.cs</DependentUpon>
     </EmbeddedResource>
