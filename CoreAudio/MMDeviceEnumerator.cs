@@ -1,6 +1,7 @@
 ﻿using CoreAudio.Enums;
 using CoreAudio.Interfaces;
 using System;
+using System.Collections.Generic;
 using System.Runtime.InteropServices;
 
 namespace CoreAudio
@@ -13,6 +14,7 @@ namespace CoreAudio
     public class MMDeviceEnumerator : IDisposable
     {
         private IMMDeviceEnumerator _mmDeviceEnumerator;
+        private readonly List<IMMNotificationClient> _notificationClients = new List<IMMNotificationClient>();
 
         public MMDeviceEnumerator()
         {
@@ -69,7 +71,16 @@ namespace CoreAudio
         /// <returns></returns>
         public int RegisterEndpointNotificationCallback([In][MarshalAs(UnmanagedType.Interface)] IMMNotificationClient client)
         {
-            return _mmDeviceEnumerator.RegisterEndpointNotificationCallback(client);
+            if (_notificationClients.Contains(client))
+            {
+                return 0;
+            }
+
+            _notificationClients.Add(client);
+
+            var hresult =_mmDeviceEnumerator.RegisterEndpointNotificationCallback(client);
+            Marshal.ThrowExceptionForHR(hresult);
+            return hresult;
         }
 
         /// <summary>
@@ -79,25 +90,37 @@ namespace CoreAudio
         /// <returns></returns>
         public int UnregisterEndpointNotificationCallback([In][MarshalAs(UnmanagedType.Interface)] IMMNotificationClient client)
         {
-            return _mmDeviceEnumerator.UnregisterEndpointNotificationCallback(client);
+            if (!_notificationClients.Contains(client))
+            {
+                return 0;
+            }
+
+            _notificationClients.Remove(client);
+
+            var hresult = _mmDeviceEnumerator.UnregisterEndpointNotificationCallback(client);
+            Marshal.ThrowExceptionForHR(hresult);
+            return hresult;
+        }
+
+        ~MMDeviceEnumerator()
+        {
+            Dispose();
         }
 
         public void Dispose()
         {
-            Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        protected virtual void Dispose(bool disposing)
-        {
-            if (!disposing)
-                return;
+            for (var i = _notificationClients.Count - 1; i >= 0; i--)
+            {
+                UnregisterEndpointNotificationCallback(_notificationClients[i]);
+            }
 
             if (_mmDeviceEnumerator != null)
             {
                 Marshal.ReleaseComObject(_mmDeviceEnumerator);
                 _mmDeviceEnumerator = null;
             }
+
+            GC.SuppressFinalize(this);
         }
     }
 }

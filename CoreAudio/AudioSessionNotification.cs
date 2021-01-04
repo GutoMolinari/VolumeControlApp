@@ -1,21 +1,20 @@
 ﻿using CoreAudio.Interfaces;
+using System;
 using System.Runtime.InteropServices;
 
 namespace CoreAudio
 {
     internal class AudioSessionNotification : IAudioSessionNotification
     {
-        private readonly AudioSessionManager audioSessionManager;
+        internal event EventHandler<IAudioSessionControl> OnSessionCreatedInternal;
 
-        internal AudioSessionNotification(AudioSessionManager audioSessionManager)
-        {
-            this.audioSessionManager = audioSessionManager;
-        }
+        internal AudioSessionNotification()
+        { }
 
         [PreserveSig]
-        public int OnSessionCreated(IAudioSessionControl newSession)
+        int IAudioSessionNotification.OnSessionCreated(IAudioSessionControl newSession)
         {
-            audioSessionManager.FireSessionCreated(newSession);
+            OnSessionCreatedInternal?.Invoke(this, newSession);
             return 0;
         }
     }

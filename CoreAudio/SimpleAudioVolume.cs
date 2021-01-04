@@ -45,14 +45,14 @@ namespace CoreAudio
             }
         }
 
-        public void Dispose()
-        {
-            GC.SuppressFinalize(this);
-        }
-
         ~SimpleAudioVolume()
         {
             Dispose();
+        }
+
+        public void Dispose()
+        {
+            GC.SuppressFinalize(this);
         }
     }
 }

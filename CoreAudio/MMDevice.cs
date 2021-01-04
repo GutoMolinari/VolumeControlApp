@@ -36,6 +36,11 @@ namespace CoreAudio
             }
         }
 
+        internal MMDevice(IMMDevice realDevice)
+        {
+            _mmDevice = realDevice;
+        }
+
         private void InitializeAudioSessionManager()
         {
             Marshal.ThrowExceptionForHR(_mmDevice.Activate(IDD_IAudioSessionManager, ClsCtx.ALL, IntPtr.Zero, out var result));
@@ -138,11 +143,6 @@ namespace CoreAudio
 
 
         #endregion
-
-        internal MMDevice(IMMDevice realDevice)
-        {
-            _mmDevice = realDevice;
-        }
 
         public override string ToString()
         {

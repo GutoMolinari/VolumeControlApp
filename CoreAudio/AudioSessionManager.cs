@@ -59,23 +59,34 @@ namespace CoreAudio
             }
         }
 
+        private AudioSessionNotification _audioSessionNotification;
         /// <summary>
         /// Occurs when audio session has been added (for example run another program that use audio playback).
         /// </summary>
-        public event SessionCreatedDelegate OnSessionCreated;
-        public delegate void SessionCreatedDelegate(object sender, IAudioSessionControl newSession);
-        private AudioSessionNotification _audioSessionNotification;
+        public event EventHandler<IAudioSessionControl> OnSessionCreated
+        {
+            add
+            {
+                if (_audioSessionNotification == null)
+                    RegisterNotifications();
+
+                _audioSessionNotification.OnSessionCreatedInternal += value;
+            }
+            remove
+            {
+                if (_audioSessionNotification == null)
+                    return;
+
+                _audioSessionNotification.OnSessionCreatedInternal -= value;
+            }
+        }
 
         internal AudioSessionManager(IAudioSessionManager audioSessionManager)
         {
             _audioSessionManager2 = audioSessionManager as IAudioSessionManager2;
-            RegisterNotifications();
-        }
 
-        internal void FireSessionCreated(IAudioSessionControl newSession)
-        {
-            RefreshSessions();
-            OnSessionCreated?.Invoke(this, newSession);
+            //if (_audioSessionManager2 == null)
+            //    throw new InvalidOperationException("Not supported on this version of Windows");
         }
 
         /// <summary>
@@ -83,42 +94,36 @@ namespace CoreAudio
         /// </summary>
         public void RefreshSessions()
         {
-            if (_audioSessionManager2 != null)
-            {
-                Marshal.ThrowExceptionForHR(_audioSessionManager2.GetSessionEnumerator(out var sessionEnum));
-                _sessions = new SessionCollection(sessionEnum);
-            }
+            Marshal.ThrowExceptionForHR(_audioSessionManager2.GetSessionEnumerator(out var sessionEnum));
+            _sessions = new SessionCollection(sessionEnum);
         }
 
         private void RegisterNotifications()
         {
-            if (_audioSessionManager2 != null)
-            {
-                _audioSessionNotification = new AudioSessionNotification(this);
-                Marshal.ThrowExceptionForHR(_audioSessionManager2.RegisterSessionNotification(_audioSessionNotification));
-            }
+            UnregisterNotifications();
+
+            _audioSessionNotification = new AudioSessionNotification();
+            Marshal.ThrowExceptionForHR(_audioSessionManager2.RegisterSessionNotification(_audioSessionNotification));
         }
 
         private void UnregisterNotifications()
         {
-            _sessions = null;
+            if (_audioSessionNotification == null)
+                return;
 
-            if (_audioSessionNotification != null && _audioSessionManager2 != null)
-            {
-                Marshal.ThrowExceptionForHR(_audioSessionManager2.UnregisterSessionNotification(_audioSessionNotification));
-                _audioSessionNotification = null;
-            }
+            Marshal.ThrowExceptionForHR(_audioSessionManager2.UnregisterSessionNotification(_audioSessionNotification));
+            _audioSessionNotification = null;
+        }
+
+        ~AudioSessionManager()
+        {
+            Dispose();
         }
 
         public void Dispose()
         {
             UnregisterNotifications();
             GC.SuppressFinalize(this);
-        }
-
-        ~AudioSessionManager()
-        {
-            Dispose();
         }
     }
 }

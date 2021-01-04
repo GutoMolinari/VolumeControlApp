@@ -11,6 +11,9 @@ namespace CoreAudio
         private readonly IAudioSessionControl2 _audioSessionControl2;
         private readonly SimpleAudioVolume _simpleAudioVolume;
 
+        #region Events
+
+
         private AudioSessionEvents _sessionEvents;
         private AudioSessionEvents SessionEventsClient
         {
@@ -63,19 +66,13 @@ namespace CoreAudio
         {
             add { SessionEventsClient.SessionDisconnected += value; }
             remove { SessionEventsClient.SessionDisconnected -= value; }
-        }
+        } 
 
-        public AudioSessionControl(IAudioSessionControl audioSessionControl)
-        {
-            _audioSessionControl = audioSessionControl;
-            _audioSessionControl2 = audioSessionControl as IAudioSessionControl2;
 
-            //if (_audioSessionControl2 == null)
-            //    throw new InvalidOperationException("Not supported on this version of Windows");
+        #endregion
 
-            if (_audioSessionControl is ISimpleAudioVolume simpleVolume)
-                _simpleAudioVolume = new SimpleAudioVolume(simpleVolume);
-        }
+        #region Properties
+
 
         public bool Mute
         {
@@ -199,6 +196,21 @@ namespace CoreAudio
             {
                 Marshal.ThrowExceptionForHR(_audioSessionControl.SetGroupingParam(value, Guid.Empty));
             }
+        } 
+
+
+        #endregion
+
+        public AudioSessionControl(IAudioSessionControl audioSessionControl)
+        {
+            _audioSessionControl = audioSessionControl;
+            _audioSessionControl2 = audioSessionControl as IAudioSessionControl2;
+
+            //if (_audioSessionControl2 == null)
+            //    throw new InvalidOperationException("Not supported on this version of Windows");
+
+            if (_audioSessionControl is ISimpleAudioVolume simpleVolume)
+                _simpleAudioVolume = new SimpleAudioVolume(simpleVolume);
         }
 
         /// <summary>
@@ -233,15 +245,15 @@ namespace CoreAudio
             _sessionEvents = null;
         }
 
+        ~AudioSessionControl()
+        {
+            Dispose();
+        }
+
         public void Dispose()
         {
             UnregisterEventClient();
             GC.SuppressFinalize(this);
-        }
-
-        ~AudioSessionControl()
-        {
-            Dispose();
         }
     }
 }
