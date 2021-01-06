@@ -33,9 +33,6 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="EventHook, Version=1.4.113.0, Culture=neutral, PublicKeyToken=2c14189d5ed28bd7, processorArchitecture=MSIL">
-      <HintPath>..\packages\EventHook.1.4.113\lib\net45\EventHook.dll</HintPath>
-    </Reference>
     <Reference Include="Gma.System.MouseKeyHook, Version=5.6.130.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MouseKeyHook.5.6.0\lib\net40\Gma.System.MouseKeyHook.dll</HintPath>
     </Reference>
@@ -58,10 +55,19 @@
     <Compile Include="LogChangeForeground.Designer.cs">
       <DependentUpon>LogChangeForeground.cs</DependentUpon>
     </Compile>
+    <Compile Include="TestMKHook.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="TestMKHook.Designer.cs">
+      <DependentUpon>TestMKHook.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <EmbeddedResource Include="LogChangeForeground.resx">
       <DependentUpon>LogChangeForeground.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="TestMKHook.resx">
+      <DependentUpon>TestMKHook.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
