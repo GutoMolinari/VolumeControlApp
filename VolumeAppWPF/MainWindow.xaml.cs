@@ -1,9 +1,6 @@
 ﻿using CoreAudio;
 using CoreAudio.Enums;
 using System;
-using System.Diagnostics;
-using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -17,8 +14,7 @@ namespace VolumeApp
         private const string riotServicesProcessName = "RiotClientServices";
 
         private AudioSessionControl valorantAudioSession;
-
-        private CancellationTokenSource cancellation;
+        private readonly ActiveWindowHooker windowHooker = new ActiveWindowHooker();
 
         public MainWindow()
         {
@@ -26,7 +22,8 @@ namespace VolumeApp
             btnAttachValorantAudio.Click += btnAttachValorantAudio_Click;
             btnToggleMuteValorantAudio.Click += btnToggleMuteValorantAudio_Click;
 
-            Application.Current.Exit += delegate { cancellation?.Cancel(); if (valorantAudioSession != null) valorantAudioSession.Mute = false; };
+            windowHooker.ActiveWindowChanged += WindowHooker_ActiveWindowChanged;
+            Application.Current.Exit += delegate { windowHooker.Stop(); if (valorantAudioSession != null) valorantAudioSession.Mute = false; };
         }
 
         //
@@ -57,19 +54,13 @@ namespace VolumeApp
 
             valorantAudioSession.StateChanged += valorantAudioSession_StateChanged;
             valorantAudioSession.SimpleVolumeChanged += valorantAudioSession_SimpleVolumeChanged;
-
-            cancellation?.Cancel();
-
-            cancellation = new CancellationTokenSource();
-            Task.Factory.StartNew(() => ShitObserver(cancellation.Token), cancellation.Token );
+            windowHooker.Init();
         }
 
         private void btnToggleMuteValorantAudio_Click(object sender, RoutedEventArgs e)
         {
             if (valorantAudioSession == null)
-            {
                 return;
-            }
 
             var newMute = !valorantAudioSession.Mute;
 
@@ -87,7 +78,7 @@ namespace VolumeApp
 
                 if (state == AudioSessionState.AudioSessionStateExpired)
                 {
-                    cancellation.Cancel();
+                    windowHooker.Stop();
                     valorantAudioSession.Mute = false;
                     valorantAudioSession = null;
                 }
@@ -102,62 +93,27 @@ namespace VolumeApp
             }));
         }
 
-        //
-        public void ShitObserver(CancellationToken token)
+        private void WindowHooker_ActiveWindowChanged(object sender, ActiveWindowChangedEventArgs e)
         {
             if (valorantAudioSession == null)
                 return;
 
             valorantAudioSession.Process.Refresh();
-            var valorantWindowPtr = valorantAudioSession.Process.MainWindowHandle;
-            var isMuted = valorantAudioSession.Mute;
-            var count = 0L;
+            var valorantWindowHandle = valorantAudioSession.Process.MainWindowHandle;
 
-            if (valorantWindowPtr == IntPtr.Zero)
+            if (valorantWindowHandle == IntPtr.Zero)
                 return;
 
-            while (true)
+            if (e.WindowHandle == valorantWindowHandle)
             {
-                Thread.Sleep(1000);
-                count++;
+                valorantAudioSession.Mute = false;
+                return;
+            }
 
-                if (count % 60 == 0)
-                {
-                    if (token.IsCancellationRequested)
-                    {
-                        Debug.WriteLine("task canceled");
-                        return;
-                    }
-
-                    if (valorantAudioSession.State == AudioSessionState.AudioSessionStateExpired)
-                        return;
-                }
-
-                var focusedWindow = GetForegroundWindow();
-
-                if (focusedWindow == valorantWindowPtr 
-                    && isMuted)
-                {
-                    valorantAudioSession.Mute = 
-                        isMuted = false;
-                    continue;
-                }
-
-                if (focusedWindow != valorantWindowPtr 
-                    && !isMuted)
-                {
-                    valorantAudioSession.Mute = 
-                        isMuted = true;
-                    continue;
-                }
+            if (e.WindowHandle != valorantWindowHandle)
+            {
+                valorantAudioSession.Mute = true;
             }
         }
-
-        private const string user32Dll = "user32.dll";
-        [DllImport(user32Dll)]
-        public static extern IntPtr GetForegroundWindow();
-
-        [DllImport(user32Dll)]
-        public static extern int SetForegroundWindow(IntPtr hwnd);
     }
 }
