@@ -79,7 +79,7 @@ namespace VolumeApp
 
         private void valorantAudioSession_StateChanged(object sender, AudioSessionStateChangedEventArgs e)
         {
-            this.Dispatcher.Invoke(() =>
+            this.Dispatcher.BeginInvoke(new Action(() =>
             {
                 var state = e.NewState;
 
@@ -91,15 +91,15 @@ namespace VolumeApp
                     valorantAudioSession.Mute = false;
                     valorantAudioSession = null;
                 }
-            });
+            }));
         }
 
         private void valorantAudioSession_SimpleVolumeChanged(object sender, AudioSessionSimpleVolumeChangedEventArgs e)
         {
-            this.Dispatcher.Invoke(() =>
+            this.Dispatcher.BeginInvoke(new Action(() =>
             {
                 txtValorantAudioMuted.Text = AudioSessionsHelper.GetStringFromMuted(e.IsMuted);
-            });
+            }));
         }
 
         //

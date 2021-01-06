@@ -76,10 +76,10 @@ namespace CoreAudio
                 return 0;
             }
 
-            _notificationClients.Add(client);
-
             var hresult =_mmDeviceEnumerator.RegisterEndpointNotificationCallback(client);
             Marshal.ThrowExceptionForHR(hresult);
+
+            _notificationClients.Add(client);
             return hresult;
         }
 
@@ -95,10 +95,10 @@ namespace CoreAudio
                 return 0;
             }
 
-            _notificationClients.Remove(client);
-
             var hresult = _mmDeviceEnumerator.UnregisterEndpointNotificationCallback(client);
             Marshal.ThrowExceptionForHR(hresult);
+
+            _notificationClients.Remove(client);
             return hresult;
         }
 
