@@ -78,15 +78,15 @@ namespace VolumeApp
 
         public IntPtr WindowHandle { get; }
 
-        private uint? _processId;
-        public uint ProcessId
+        private uint? _windowProcessId;
+        public uint WindowProcessId
         {
             get
             {
-                if (_processId == null)
-                    _processId = GetWindowProcessId(WindowHandle);
+                if (_windowProcessId == null)
+                    _windowProcessId = GetWindowProcessId(WindowHandle);
 
-                return _processId.Value;
+                return _windowProcessId.Value;
             }
         }
 

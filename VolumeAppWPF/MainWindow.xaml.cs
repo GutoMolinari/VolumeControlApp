@@ -98,19 +98,14 @@ namespace VolumeApp
             if (valorantAudioSession == null)
                 return;
 
-            valorantAudioSession.Process.Refresh();
-            var valorantWindowHandle = valorantAudioSession.Process.MainWindowHandle;
 
-            if (valorantWindowHandle == IntPtr.Zero)
-                return;
-
-            if (e.WindowHandle == valorantWindowHandle)
+            if (e.WindowProcessId == valorantAudioSession.ProcessID)
             {
                 valorantAudioSession.Mute = false;
                 return;
             }
 
-            if (e.WindowHandle != valorantWindowHandle)
+            if (e.WindowProcessId != valorantAudioSession.ProcessID)
             {
                 valorantAudioSession.Mute = true;
             }
