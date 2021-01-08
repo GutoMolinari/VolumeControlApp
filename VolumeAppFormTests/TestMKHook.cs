@@ -1,5 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 using System.Windows.Forms;
 using Gma.System.MouseKeyHook;
 
@@ -222,6 +224,11 @@ namespace VolumeAppFormTests
         private void clearLog_Click(object sender, EventArgs e)
         {
             textBoxLog.Clear();
+        }
+
+        private void LogCallerName([CallerMemberName] string callerName = null)
+        {
+            Debug.WriteLine($"Called from {callerName}");
         }
     }
 }

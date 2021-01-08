@@ -34,8 +34,8 @@ namespace VolumeAppFormTests
         private const uint EVENT_SYSTEM_FOREGROUND = 3;
         private const uint WINEVENT_OUTOFCONTEXT = 0;
 
-        private WinEventDelegate procDelegate;
-        private IntPtr hhook;
+        private readonly WinEventDelegate procDelegate;
+        private readonly IntPtr hhook;
 
         public LogChangeForeground()
         {
