@@ -1,0 +1,65 @@
+﻿<UserControl x:Class="VolumeApp.AudioSessionStrip"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:VolumeApp"
+             mc:Ignorable="d" 
+             x:Name="audioSessionStrip"
+             d:DesignWidth="365">
+    <UserControl.Resources>
+        <Style x:Key="defaultControlSize" TargetType="Control">
+            <Setter Property="Width" Value="75" />
+            <Setter Property="Height" Value="20" />
+        </Style>
+        <Style x:Key="defaultTextbox" TargetType="TextBox" BasedOn="{StaticResource defaultControlSize}">
+            <Setter Property="IsEnabled" Value="False"/>
+        </Style>
+    </UserControl.Resources>
+    
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="7"/>
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <TextBlock 
+            Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="4" 
+            x:Name="lblAudioName"
+            TextTrimming="WordEllipsis" 
+            FontSize="13.5"
+            Text="{Binding AudioSessionName, ElementName=audioSessionStrip}"
+            />
+        <Button
+            Grid.Row="2" Grid.Column="0"
+            Style="{StaticResource defaultControlSize}"
+            x:Name="btnAttachAudio"
+            Content="Attach"
+            />
+        <TextBox
+            Grid.Row="2" Grid.Column="1" 
+            Style="{StaticResource defaultControlSize}"
+            x:Name="txtAudioState"
+            Text="{Binding AudioStateTextBox, ElementName=audioSessionStrip}"
+            />
+        <TextBox
+            Grid.Row="2" Grid.Column="2" 
+            Style="{StaticResource defaultControlSize}"
+            x:Name="txtAudioMuted"
+            Text="{Binding AudioMutedTextBox, ElementName=audioSessionStrip}"
+            />
+        <Button
+            Grid.Row="2" Grid.Column="3" 
+            Style="{StaticResource defaultControlSize}"
+            x:Name="btnToggleMuteAudio"
+            Content="Toggle mute"
+            />            
+    </Grid>
+</UserControl>

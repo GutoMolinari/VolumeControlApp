@@ -23,11 +23,6 @@ namespace VolumeApp
             winDelegate = new WinEventDelegate(WinEventProc);
         }
 
-        ~ActiveWindowHooker()
-        {
-            Stop();
-        }
-
         private void WinEventProc(IntPtr hWinEventHook, uint eventType, IntPtr hwnd, int idObject, int idChild, uint dwEventThread, uint dwmsEventTime)
         {
             switch (eventType)
@@ -48,6 +43,11 @@ namespace VolumeApp
                 return;
 
             hookPtr = SetWinEventHook(EVENT_SYSTEM_FOREGROUND, EVENT_SYSTEM_MINIMIZEEND, IntPtr.Zero, winDelegate, 0, 0, WINEVENT_OUTOFCONTEXT);
+        }
+
+        ~ActiveWindowHooker()
+        {
+            Stop();
         }
         
         public void Stop()

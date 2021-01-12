@@ -10,8 +10,13 @@ namespace VolumeApp
 {
     public partial class MainWindow : Window
     {
+#if DEBUG
+        private const string valorantProcessName = "mpc-hc64";
+        private const string riotServicesProcessName = "mpc-hc64";
+#else
         private const string valorantProcessName = "VALORANT-Win64-Shipping";
         private const string riotServicesProcessName = "RiotClientServices";
+#endif
 
         private AudioSessionControl valorantAudioSession;
         private AudioSessionControl riotServicesAudioSession;
@@ -23,11 +28,11 @@ namespace VolumeApp
         {
             InitializeComponent();
 
-            btnAttachValorantAudio.Click += btnAttachValorantAudio_Click;
-            btnToggleMuteValorantAudio.Click += btnToggleMuteValorantAudio_Click;
+            valorantStrip.ClickAttach += btnAttachValorantAudio_Click;
+            valorantStrip.ClickMute += btnToggleMuteValorantAudio_Click;
 
-            btnRiotClientServicesAudio.Click += btnRiotClientServicesAudio_Click;
-            btnToggleMuteRiotClientServicesAudio.Click += btnToggleMuteRiotClientServicesAudio_Click;
+            rioServicesStrip.ClickAttach += btnRiotClientServicesAudio_Click;
+            rioServicesStrip.ClickMute += btnToggleMuteRiotClientServicesAudio_Click;
 
             windowHooker.ActiveWindowChanged += WindowHooker_ActiveWindowChanged;
             this.Closing += MainWindow_Closing;
@@ -65,7 +70,7 @@ namespace VolumeApp
 
             if (task.Result == null)
             {
-                txtValorantAudioState.Text = "Not found";
+                valorantStrip.AudioStateTextBox = "Not found";
                 return;
             }
 
@@ -76,8 +81,8 @@ namespace VolumeApp
 
             valorantAudioSession = task.Result;
 
-            txtValorantAudioState.Text = AudioSessionsHelper.GetStringAudioState(valorantAudioSession.State);
-            txtValorantAudioMuted.Text = AudioSessionsHelper.GetStringFromMuted(valorantAudioSession.Mute);
+            valorantStrip.AudioStateTextBox = AudioSessionsHelper.GetStringAudioState(valorantAudioSession.State);
+            valorantStrip.AudioMutedTextBox = AudioSessionsHelper.GetStringFromMuted(valorantAudioSession.Mute);
 
             valorantAudioSession.StateChanged += valorantAudioSession_StateChanged;
             valorantAudioSession.SimpleVolumeChanged += valorantAudioSession_SimpleVolumeChanged;
@@ -92,7 +97,7 @@ namespace VolumeApp
             var newMute = !valorantAudioSession.Mute;
 
             valorantAudioSession.Mute = newMute;
-            txtValorantAudioMuted.Text = AudioSessionsHelper.GetStringFromMuted(newMute);
+            valorantStrip.AudioMutedTextBox = AudioSessionsHelper.GetStringFromMuted(newMute);
         }
 
         private void valorantAudioSession_StateChanged(object sender, AudioSessionStateChangedEventArgs e)
@@ -101,7 +106,7 @@ namespace VolumeApp
             {
                 var state = e.NewState;
 
-                txtValorantAudioState.Text = AudioSessionsHelper.GetStringAudioState(state);
+                valorantStrip.AudioStateTextBox = AudioSessionsHelper.GetStringAudioState(state);
 
                 if (state == AudioSessionState.AudioSessionStateExpired)
                 {
@@ -116,7 +121,7 @@ namespace VolumeApp
         {
             this.Dispatcher.BeginInvoke(new Action(() =>
             {
-                txtValorantAudioMuted.Text = AudioSessionsHelper.GetStringFromMuted(e.IsMuted);
+                valorantStrip.AudioMutedTextBox = AudioSessionsHelper.GetStringFromMuted(e.IsMuted);
             }));
         }
 
@@ -154,7 +159,7 @@ namespace VolumeApp
 
             if (task.Result == null)
             {
-                txtRiotClientServicesAudioState.Text = "Not found";
+                rioServicesStrip.AudioStateTextBox = "Not found";
                 return;
             }
 
@@ -165,8 +170,8 @@ namespace VolumeApp
 
             riotServicesAudioSession = task.Result;
 
-            txtRiotClientServicesAudioState.Text = AudioSessionsHelper.GetStringAudioState(riotServicesAudioSession.State);
-            txtRiotClientServicesAudioMuted.Text = AudioSessionsHelper.GetStringFromMuted(riotServicesAudioSession.Mute);
+            rioServicesStrip.AudioStateTextBox = AudioSessionsHelper.GetStringAudioState(riotServicesAudioSession.State);
+            rioServicesStrip.AudioMutedTextBox = AudioSessionsHelper.GetStringFromMuted(riotServicesAudioSession.Mute);
 
             riotServicesAudioSession.StateChanged += riotServicesAudioSession_StateChanged;
             riotServicesAudioSession.SimpleVolumeChanged += riotServicesAudioSession_SimpleVolumeChanged;
@@ -181,7 +186,7 @@ namespace VolumeApp
             var newMute = !riotServicesAudioSession.Mute;
 
             riotServicesAudioSession.Mute = newMute;
-            txtRiotClientServicesAudioMuted.Text = AudioSessionsHelper.GetStringFromMuted(newMute);
+            rioServicesStrip.AudioMutedTextBox = AudioSessionsHelper.GetStringFromMuted(newMute);
         }
 
         private void riotServicesAudioSession_StateChanged(object sender, AudioSessionStateChangedEventArgs e)
@@ -190,7 +195,7 @@ namespace VolumeApp
             {
                 var state = e.NewState;
 
-                txtRiotClientServicesAudioState.Text = AudioSessionsHelper.GetStringAudioState(state);
+                rioServicesStrip.AudioStateTextBox = AudioSessionsHelper.GetStringAudioState(state);
 
                 if (state == AudioSessionState.AudioSessionStateExpired)
                 {
@@ -205,7 +210,7 @@ namespace VolumeApp
         {
             this.Dispatcher.BeginInvoke(new Action(() =>
             {
-                txtRiotClientServicesAudioMuted.Text = AudioSessionsHelper.GetStringFromMuted(e.IsMuted);
+                rioServicesStrip.AudioMutedTextBox = AudioSessionsHelper.GetStringFromMuted(e.IsMuted);
             }));
         }
 
