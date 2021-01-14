@@ -1,4 +1,5 @@
-﻿using System.Windows;
+﻿using System.Diagnostics;
+using System.Windows;
 using System.Windows.Controls;
 
 namespace VolumeApp
@@ -54,12 +55,12 @@ namespace VolumeApp
 
         private void Dispatcher_ShutdownStarted(object sender, System.EventArgs e)
         {
-            throw new System.NotImplementedException();
+            Debug.WriteLine("Dispatcher_ShutdownStarted");
         }
 
         private void AudioSessionStrip_Unloaded(object sender, RoutedEventArgs e)
         {
-            throw new System.NotImplementedException();
+            Debug.WriteLine("AudioSessionStrip_Unloaded");
         }
     }
 }
